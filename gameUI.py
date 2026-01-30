@@ -4,6 +4,8 @@ import classes
 import math
 from Button import Button, ToggleButton
 from button_click import ButtonClickHandler
+#import themes
+#from ThemeManager import ThemeManager
 
 pg.init()
 
@@ -13,6 +15,7 @@ class Window:
         self.iconSize = 50
         self.fps = 30
         self.fontName = "Arial"
+        #self.themeManager = ThemeManager(themes.THEMES, default="classic")
 
 
     def loadAssets(self, game):
@@ -54,22 +57,21 @@ class Window:
 
     def drawBoard(self, Display, game, color=(0, 0, 0)):
         # draw 19x19 grid
-        board_origin = (self.size[0] // 2 - game.boardSizeGlobal // 2 + game.caseSize // 2, self.size[1] // 2 - game.boardSizeGlobal // 2.3 + game.caseSize // 2)
         for i in range(game.numCase):
             # vertical lines
-            start_pos = (board_origin[0] + i * game.caseSize, board_origin[1])
-            end_pos = (board_origin[0] + i * game.caseSize, board_origin[1] + game.boardSizeGlobal - game.caseSize)
+            start_pos = (game.boardBorderOrigin[0] + i * game.caseSize - 1, game.boardBorderOrigin[1] - 1)
+            end_pos = (game.boardBorderOrigin[0] + i * game.caseSize - 1, game.boardBorderOrigin[1] + game.boardBorderSize - 1)
             pg.draw.line(Display, color, start_pos, end_pos, 2)
             # horizontal lines
-            start_pos = (board_origin[0], board_origin[1] + i * game.caseSize)
-            end_pos = (board_origin[0] + game.boardSizeGlobal - game.caseSize, board_origin[1] + i * game.caseSize)
+            start_pos = (game.boardBorderOrigin[0] - 1, game.boardBorderOrigin[1] + i * game.caseSize - 1)
+            end_pos = (game.boardBorderOrigin[0] + game.boardBorderSize - 1, game.boardBorderOrigin[1] + i * game.caseSize - 1)
             pg.draw.line(Display, color, start_pos, end_pos, 2)
         
         # draw star points
         star_points = [(3, 3), (3, 9), (3, 15), (9, 3), (9, 9), (9, 15), (15, 3), (15, 9), (15, 15)]
         for point in star_points:
-            center = (board_origin[0] + point[0] * game.caseSize + 1, board_origin[1] + point[1] * game.caseSize + 1)
-            pg.draw.circle(Display, color, center, 7)
+            center = (game.boardBorderOrigin[0] + point[0] * game.caseSize, game.boardBorderOrigin[1] + point[1] * game.caseSize)
+            pg.draw.circle(Display, color, center, 7) # TODO: replace magic number with CONSTANT
 
 
     def drawGameScene(self, Display, game):
@@ -105,15 +107,19 @@ class Window:
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, window):
         self.displayedWindow = 0            # 0: Main Menu, 1: Game Scene, 2: Settings Menu
         self.activePlayer = 1               # 1: Player 1, 2: Player 2
         self.currentScore = {1: 0, 2: 0}
         self.gameMode = None                # "PVP" or "PVE"
+        self.boardSize = 722
+        self.boardYOffset = 150
         self.numCase = 19
-        self.boardSizeGlobal = 722
-        self.caseSize = self.boardSizeGlobal // self.numCase
-        self.boardSizeBorder = self.boardSizeGlobal - self.caseSize
+        self.caseSize = self.boardSize // self.numCase
+        self.boardBorderSize = self.boardSize - self.caseSize
+        self.boardOrigin = (window.size[0] // 2 - self.boardSize // 2, self.boardYOffset)
+        self.boardBorderOrigin = (self.boardOrigin[0] + (self.caseSize // 2), self.boardOrigin[1] + (self.caseSize // 2))
+
 
 
     def reset(self):
@@ -121,19 +127,18 @@ class Game:
         self.currentScore = {1: 0, 2: 0}
 
     def getIndexFromPos(self, window, pos):
-        board_origin = (window.size[0] // 2 - self.boardSizeGlobal // 2 + self.caseSize // 4, window.size[1] // 2 - self.boardSizeGlobal // 2.3 + self.caseSize // 4)
-        x_rel = pos[0] - board_origin[0]
-        y_rel = pos[1] - board_origin[1]
-        if 0 <= x_rel < self.boardSizeGlobal and 0 <= y_rel < self.boardSizeGlobal:
+        x_rel = pos[0] - self.boardOrigin[0]
+        y_rel = pos[1] - self.boardOrigin[1]
+        if 0 <= x_rel < self.boardSize and 0 <= y_rel < self.boardSize:
             col = int(x_rel // self.caseSize)
             row = int(y_rel // self.caseSize)
             return (row, col)
+        return (None, None)
 
     #not working
     def getPosFromIndex(self, row, col, window):
-        board_origin = (window.size[0] // 2 - self.boardSizeGlobal // 2 + self.caseSize // 4, window.size[1] // 2 - self.boardSizeGlobal // 2.3 + self.caseSize // 4)
-        x = board_origin[0] + col * self.caseSize
-        y = board_origin[1] + row * self.caseSize
+        x = self.boardBorderOrigin[0] + col * self.caseSize
+        y = self.boardBorderOrigin[1] + row * self.caseSize
         return (x, y)
 
 def init(window):
@@ -146,7 +151,7 @@ def init(window):
 
 def main():
     window = Window()
-    game = Game()
+    game = Game(window)
     Display = init(window)
 
     window.loadAssets(game)                                                                                                                                                                                                            
@@ -179,13 +184,16 @@ def main():
                     window.settingButton.update(event)
                 case 1:
                     window.homeButton.update(event)
+
                     if event.type == MOUSEBUTTONDOWN:
                         game_move = game.getIndexFromPos(window, event.pos)
+                        print(f"game move : {game_move}")
                         pos = game.getPosFromIndex(game_move[0], game_move[1], window)
-                        pg.draw.circle(Display, (255, 0, 0), pos, 10)
-                        print(pos)
+                        print(f"position on board : {pos}")
+                        pg.draw.circle(Display, (255, 0, 0), pos, 5)
                         pg.display.flip()
                         pg.time.delay(100)
+
                     # TODO: game logic
                     # check event in the game -> tie; win; switch player; invalid move; capture
                     # if AI mode, get AI move 
