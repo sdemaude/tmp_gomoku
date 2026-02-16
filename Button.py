@@ -1,6 +1,7 @@
 import pygame as pg
 from pygame.locals import *
 
+
 def create_hover_image(image, rect, factor):
     image_hover_size = (int(image.get_width() * factor), int(image.get_height() * factor))
     image_hover = pg.transform.scale(image, image_hover_size)
@@ -9,6 +10,7 @@ def create_hover_image(image, rect, factor):
         rect.y - (image_hover.get_height() - rect.height) // 2,
     )
     return image_hover, hover_position
+
 
 class Button:
     def __init__(self, image_path, position, size, cb=None):
@@ -20,19 +22,23 @@ class Button:
         self.on_hover = False
         self.image_hover, self.hover_position = create_hover_image(self.image, self.rect, 1.2)
 
+
     def draw(self, surface):
         if self.on_hover:
             surface.blit(self.image_hover, self.hover_position)
         else:
             surface.blit(self.image, self.position)
 
+
     def on_button(self, pos):
         return self.rect.collidepoint(pos)
+
 
     def on_click(self):
         if self.callback:
             self.callback(self)
         self.on_hover = False
+
 
     def update(self, event):
         if event.type == MOUSEBUTTONDOWN:
@@ -55,13 +61,14 @@ class ToggleButton(Button):
         )
         self.image_off_hover, _ = create_hover_image(self.image_off, self.rect, 1.2)
         self.active = initial_state
-    
+
+
     def on_click(self):
         self.toggle()
         if self.callback:
             self.callback(self)
 
+
     def toggle(self):
         self.active = not self.active
         self.image, self.image_hover = (self.image_on, self.image_on_hover) if self.active else (self.image_off, self.image_off_hover)
-      
