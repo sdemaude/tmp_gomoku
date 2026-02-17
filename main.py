@@ -14,19 +14,12 @@ def main():
     game = Game()
     window = Window(game)
 
+    # delete later
     musicPlayer = MusicPlayer("assets/sound/background_music.mp3")
     musicPlayer.play()
     soundEffects = SoundEffects()
-
     window.setButtons(soundEffects, musicPlayer)
-
-    match game.displayedWindow:
-        case 0:
-            window.drawMainMenu()
-        case 1:
-            window.drawGameScene()
-        case 2:
-            window.drawSettingsMenu()
+    window.drawMainMenu()
 
     # Main game loop
     running = True
@@ -49,7 +42,7 @@ def main():
                         if game_move[0] is not None and game_move[1] is not None:
                         # check if the move is valid
                             if game.placePiece(game_move[0], game_move[1]): # add sound effect when placing piece
-                                soundEffects.playPieceSound()
+                                #soundEffects.playPieceSound()
                                 game.activePlayer = 2 if game.activePlayer == 1 else 1
                         # check for win/tie condition
                         # if AI mode, get AI move and repeat the above steps for AI move
@@ -60,6 +53,10 @@ def main():
                     window.settingButton.update(event)
                     window.musicButton.update(event)
                     window.soundButton.update(event)
+                    window.theme1Button.update(event)
+                    window.theme2Button.update(event)
+                    window.theme3Button.update(event)
+                    window.theme4Button.update(event)
             window.exitButton.update(event)
 
         match game.displayedWindow:
