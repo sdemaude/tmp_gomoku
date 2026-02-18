@@ -15,7 +15,7 @@ from MusicPlayer import MusicPlayer
 from PlayerIcon import PlayerIcon
 from Position import Position, PositionUnit, PositionReference
 from SoundEffects import SoundEffects
-
+from assets import Assets
 
 class Window:
     def __init__(self, game):
@@ -23,7 +23,8 @@ class Window:
         self.size = (1600, 900)
         self.fps = 30
         self.displayedWindow = DisplayedWindow.MAIN_MENU
-        self.display = self.createDisplay("Gomoku", "assets/image/icon_star_normal.png")
+        print(Assets.ICON)
+        self.display = self.createDisplay("Gomoku", Assets.ICON.value)
 
         self.soundEffects = SoundEffects()
         self.musicPlayer = MusicPlayer()
@@ -47,23 +48,20 @@ class Window:
     def _setButtons(self):
         buttonClick = ButtonClickHandler(self.game, self)
 
-        self.exitButton = Button("assets/image/icon_exit.png", Position(self, 96, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.exit_button_click)
-        self.settingButton = Button("assets/image/icon_settings.png", Position(self, 92, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.setting_button_click)
-        self.homeButton = Button("assets/image/icon_home.png", Position(self, 92, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.home_button_click)
+        self.exitButton = Button(Assets.EXIT.value, Position(self, 96, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.exit_button_click)
+        self.settingButton = Button(Assets.SETTINGS.value, Position(self, 92, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.setting_button_click)
+        self.homeButton = Button(Assets.HOME.value, Position(self, 92, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.home_button_click)
 
-        self.musicButton = ToggleButton("assets/image/icon_music_on.png", "assets/image/icon_music_off.png", Position(self, 50, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), True, buttonClick.music_button_click)
-        self.soundButton = ToggleButton("assets/image/icon_sound_on.png", "assets/image/icon_sound_off.png", Position(self, 50, 60, PositionUnit.PERCENTAGE, PositionReference.CENTER), True, buttonClick.sound_button_click)
+        self.musicButton = ToggleButton(Assets.MUSIC_ON.value, Assets.MUSIC_OFF.value, Position(self, 50, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), True, buttonClick.music_button_click)
+        self.soundButton = ToggleButton(Assets.SOUND_ON.value, Assets.SOUND_OFF.value, Position(self, 50, 60, PositionUnit.PERCENTAGE, PositionReference.CENTER), True, buttonClick.sound_button_click)
         
-        self.pvpButton = Button("assets/image/button_pvp.png", Position(self, 33, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.pvp_button_click)
-        self.pveButton = Button("assets/image/button_pve.png", Position(self, 66, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.pve_button_click)
+        self.pvpButton = Button(Assets.PVP.value, Position(self, 33, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.pvp_button_click)
+        self.pveButton = Button(Assets.PVE.value, Position(self, 66, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.pve_button_click)
 
-        self.theme1Button = Button("assets/image/button_theme1.png", Position(self, 37, 67, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme1_button_click, False)
-        self.theme2Button = Button("assets/image/button_theme2.png", Position(self, 67, 67, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme2_button_click, False)
-        self.theme3Button = Button("assets/image/button_theme3.png", Position(self, 37, 80, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme3_button_click, False)
-        self.theme4Button = Button("assets/image/button_theme4.png", Position(self, 67, 80, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme4_button_click, False)    
-
-        #self.playButton = Button("assets/image/button_play.png", (self.size[0] // 2 - 100, self.size[1] // 2 - 50), (100, 100), buttonClick.play_button_click)
-
+        self.theme1Button = Button(Assets.THEME1.value, Position(self, 37, 67, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme1_button_click, False)
+        self.theme2Button = Button(Assets.THEME2.value, Position(self, 67, 67, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme2_button_click, False)
+        self.theme3Button = Button(Assets.THEME3.value, Position(self, 37, 80, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme3_button_click, False)
+        self.theme4Button = Button(Assets.THEME4.value, Position(self, 67, 80, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme4_button_click, False)
 
     def drawBackground(self):
         background = self.themeManager.getBackground()
@@ -144,6 +142,13 @@ class Window:
 
     def drawMainMenu(self):
         self.drawBackground()
+
+        font = pg.font.SysFont(self.themeManager.fontName, 90)
+        title = font.render("Gomoku", True, (255, 255, 255))
+        self.display.blit(title, (self.size[0] // 2 - title.get_width() // 2, 100))
+        font = pg.font.SysFont(self.themeManager.fontName, 50)
+        selectModeText = font.render("Select Game Mode:", True, (255, 255, 255))
+        self.display.blit(selectModeText, (self.size[0] // 2 - selectModeText.get_width() // 2, 300))
 
         self.pvpButton.draw(self.display)
         self.pveButton.draw(self.display)

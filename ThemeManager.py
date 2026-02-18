@@ -2,7 +2,7 @@ import pygame as pg
 from pygame.locals import *
 
 from MusicPlayer import MusicPlayer
-
+from Game import GameMode
 
 class ThemeManager:
     def __init__(self, themes, window, default: str="classic"):
@@ -13,10 +13,10 @@ class ThemeManager:
         self.setTheme(default)
 
 
-    def getPlayerIcon(self, playerId: int, gamemode):
-        if gamemode == "pvp":
+    def getPlayerIcon(self, playerId: int, gamemode: GameMode):
+        if gamemode == GameMode.PVP:
             return self._images["icon_player1"] if playerId == 1 else self._images["icon_player2"]
-        elif gamemode == "pve":
+        elif gamemode == GameMode.PVE:
             return self._images["icon_player1"] if playerId == 1 else self._images["icon_playerIA"]
         else:
             raise ValueError("Invalid game mode")

@@ -71,7 +71,6 @@ def main():
         match window.displayedWindow:
             case DisplayedWindow.MAIN_MENU:
                 window.drawMainMenu()
-                game.reset() # TODO: is it the good place to reset the game?
             case DisplayedWindow.GAME_SCENE:
                 window.drawGameScene()
             case DisplayedWindow.SETTINGS:

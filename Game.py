@@ -11,7 +11,7 @@ class GameMode(Enum):
 class Game:
     def __init__(self):
         self.activePlayer = 1               # 1: Player 1, 2: Player 2
-        self.gameMode = None                # GameMode.PVP or GameMode.PVE
+        self.mode = None                    # GameMode.PVP or GameMode.PVE
         self.currentScore = {1: 0, 2: 0}
         self.boardSize = 722
         self.boardYOffset = 150
@@ -22,8 +22,9 @@ class Game:
         self.boardState = [[0 for _ in range(self.numCase)] for _ in range(self.numCase)] # 0: empty, 1: player 1 piece, 2: player 2 piece
 
 
-    def reset(self):
+    def init(self, gameMode: GameMode):
         self.activePlayer = 1
+        self.mode = gameMode
         self.currentScore = {1: 0, 2: 0}
         self.boardState = [[0 for _ in range(self.numCase)] for _ in range(self.numCase)]
 

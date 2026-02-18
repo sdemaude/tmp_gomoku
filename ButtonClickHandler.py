@@ -1,7 +1,7 @@
 import pygame as pg
 from pygame.locals import *
 
-from Game import Game
+from Game import Game, GameMode
 from Window import DisplayedWindow
 from Button import Button, ToggleButton
 import themes
@@ -56,13 +56,13 @@ class ButtonClickHandler:
 
     def pvp_button_click(self, button: Button):
         self.soundEffects.play_sound("pop")
-        self.game.mode = "pvp"
+        self.game.init(gameMode=GameMode.PVP)
         self.window.displayedWindow = DisplayedWindow.GAME_SCENE
 
 
     def pve_button_click(self, button: Button):
         self.soundEffects.play_sound("pop")
-        self.game.mode = "pve"
+        self.game.init(gameMode=GameMode.PVE)
         self.window.displayedWindow = DisplayedWindow.GAME_SCENE
 
 
