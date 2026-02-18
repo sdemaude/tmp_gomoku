@@ -1,13 +1,18 @@
 import pygame as pg
 from pygame.locals import *
+from enum import Enum
+
+
+class GameMode(Enum):
+    PVP = 1
+    PVE = 2
 
 
 class Game:
     def __init__(self):
-        self.displayedWindow = 0            # 0: Main Menu, 1: Game Scene, 2: Settings Menu
         self.activePlayer = 1               # 1: Player 1, 2: Player 2
+        self.gameMode = None                # GameMode.PVP or GameMode.PVE
         self.currentScore = {1: 0, 2: 0}
-        self.mode = None                    # "PVP" or "PVE"
         self.boardSize = 722
         self.boardYOffset = 150
         self.numCase = 19
@@ -31,7 +36,7 @@ class Game:
         return (self.boardOrigin(window)[0] + (self.caseSize // 2), self.boardOrigin(window)[1] + (self.caseSize // 2))
 
 
-    def getIndexFromPos(self, window, pos):
+    def getIndexFromPos(self, window, pos: tuple):
         boardOrigin = self.boardOrigin(window)
         x_rel = pos[0] - boardOrigin[0]
         y_rel = pos[1] - boardOrigin[1]
@@ -42,14 +47,14 @@ class Game:
         return (None, None)
 
 
-    def getPosFromIndex(self, row, col, window):
+    def getPosFromIndex(self, row: int, col: int, window):
         boardBorderOrigin = self.boardBorderOrigin(window)
         x = boardBorderOrigin[0] + col * self.caseSize
         y = boardBorderOrigin[1] + row * self.caseSize
         return (x, y)
 
-   
-    def placePiece(self, row, col):
+
+    def placePiece(self, row: int, col: int):
         if self.boardState[row][col] == 0:
             self.boardState[row][col] = self.activePlayer
             return True

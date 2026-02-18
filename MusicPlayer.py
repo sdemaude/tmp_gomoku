@@ -3,10 +3,14 @@ from pygame.locals import *
 
 
 class MusicPlayer:
-    def __init__(self, music_file):
-        pg.mixer.music.load(music_file)
+    def __init__(self):
+        #pg.mixer.music.load(musicFile)
+        pass
 
-    def play(self, loops=-1):
+    def load(self, musicFile):
+        pg.mixer.music.load(musicFile)
+
+    def play(self, loops: int=-1):
         pg.mixer.music.play(loops)
 
     def pause(self):

@@ -1,30 +1,33 @@
 import pygame as pg
 from pygame.locals import *
 
-from ThemeManager import ThemeManager
+from Game import Game
+from Window import DisplayedWindow
+from Button import Button, ToggleButton
 import themes
+from ThemeManager import ThemeManager
+
 
 class ButtonClickHandler:
-    def __init__(self, game, window, soundEffects, musicPlayer):
+    def __init__(self, game: Game, window):
         self.game = game
         self.window = window
         self.themeManager = window.themeManager
-        self.soundEffects = soundEffects
-        self.musicPlayer = musicPlayer
+        self.soundEffects = window.soundEffects
+        self.musicPlayer = window.musicPlayer
 
-
-    def home_button_click(self, button):
+    def home_button_click(self, button: Button):
         self.soundEffects.play_sound("pop")
-        self.game.displayedWindow = 0
+        self.window.displayedWindow = DisplayedWindow.MAIN_MENU
 
 
-    def exit_button_click(self, button):
+    def exit_button_click(self, button: Button):
         self.soundEffects.play_sound("pop")
         pg.quit()
         exit()
 
 
-    def music_button_click(self, button):
+    def music_button_click(self, button: ToggleButton):
         self.soundEffects.play_sound("pop")
         if button.active:
             self.musicPlayer.unpause()
@@ -32,52 +35,52 @@ class ButtonClickHandler:
             self.musicPlayer.pause()
 
 
-    def sound_button_click(self, button):
+    def sound_button_click(self, button: ToggleButton):
         self.soundEffects.toggle()
         self.soundEffects.play_sound("pop")
 
 
-    def play_button_click(self, button):
+    def play_button_click(self, button: Button):
         self.soundEffects.play_sound("pop")
-        self.game.displayedWindow = 1
+        self.window.displayedWindow = DisplayedWindow.GAME_SCENE
 
 
-    def setting_button_click(self, button):
+    def setting_button_click(self, button: Button):
         self.soundEffects.play_sound("pop")
-        match self.game.displayedWindow:
-            case 0:
-                self.game.displayedWindow = 2
-            case 2:
-                self.game.displayedWindow = 0
+        match self.window.displayedWindow:
+            case DisplayedWindow.MAIN_MENU:
+                self.window.displayedWindow = DisplayedWindow.SETTINGS
+            case DisplayedWindow.SETTINGS:
+                self.window.displayedWindow = DisplayedWindow.MAIN_MENU
 
 
-    def pvp_button_click(self, button):
+    def pvp_button_click(self, button: Button):
         self.soundEffects.play_sound("pop")
         self.game.mode = "pvp"
-        self.game.displayedWindow = 1
+        self.window.displayedWindow = DisplayedWindow.GAME_SCENE
 
 
-    def pve_button_click(self, button):
+    def pve_button_click(self, button: Button):
         self.soundEffects.play_sound("pop")
         self.game.mode = "pve"
-        self.game.displayedWindow = 1
+        self.window.displayedWindow = DisplayedWindow.GAME_SCENE
 
 
-    def theme1_button_click(self, button):
+    def theme1_button_click(self, button: Button):
         self.soundEffects.play_sound("pop")
         self.window.themeManager.setTheme("classic")
 
 
-    def theme2_button_click(self, button):
+    def theme2_button_click(self, button: Button):
         self.soundEffects.play_sound("pop")
         self.window.themeManager.setTheme("crystal")
 
 
-    def theme3_button_click(self, button):
+    def theme3_button_click(self, button: Button):
         self.soundEffects.play_sound("pop")
         self.window.themeManager.setTheme("classic")
 
 
-    def theme4_button_click(self, button):
+    def theme4_button_click(self, button: Button):
         self.soundEffects.play_sound("pop")
         self.window.themeManager.setTheme("crystal")

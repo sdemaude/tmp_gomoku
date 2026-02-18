@@ -12,7 +12,7 @@ THEMES = {
             "icon_playerIA": "assets/classic/robot_icon.png",
             "background": "assets/classic/background.png",
         },
-        #"music": "assets/classic/music.ogg",
+        "music": "assets/sound/background_music.mp3",
         "font": "Arial"
     },
 
@@ -29,7 +29,7 @@ THEMES = {
             "icon_playerIA": "assets/crystal/robot_icon.png",
             "background": "assets/crystal/background.jpg",
         },
-        #"music": "assets/crystal/music.ogg",
+        "music": "assets/sound/background_music.mp3",
         "font": "Arial"
     }
 }
