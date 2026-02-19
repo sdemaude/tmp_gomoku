@@ -16,6 +16,8 @@ from PlayerIcon import PlayerIcon
 from Position import Position, PositionUnit, PositionReference
 from SoundEffects import SoundEffects
 from assets import Assets
+from Board import Board
+from Game import Game
 
 class Window:
     def __init__(self, game):
@@ -23,21 +25,21 @@ class Window:
         self.size = (1600, 900)
         self.fps = 30
         self.displayedWindow = DisplayedWindow.MAIN_MENU
-        print(Assets.ICON)
-        self.display = self.createDisplay("Gomoku", Assets.ICON.value)
+        self.display = self._createDisplay("Gomoku", Assets.ICON.value)
 
         self.soundEffects = SoundEffects()
         self.musicPlayer = MusicPlayer()
         self.themeManager = ThemeManager(themes.THEMES, self, default="classic")
+        self.board = Board()
 
         self.player1Icon = PlayerIcon(self.themeManager, self.game, (self.size[0] // 2 - 300, 30), (100, 100), 1)
         self.player2Icon = PlayerIcon(self.themeManager, self.game, (self.size[0] // 2 + 200, 30), (100, 100), 2)
 
         self._setButtons()
-        self.drawMainMenu()
+        self._drawMainMenu()
 
 
-    def createDisplay(self, name: str, iconPath: str):
+    def _createDisplay(self, name: str, iconPath: str):
         display = pg.display.set_mode(self.size)
         pg.display.set_caption(name)
         icon = pg.image.load(iconPath).convert_alpha()
@@ -63,13 +65,51 @@ class Window:
         self.theme3Button = Button(Assets.THEME3.value, Position(self, 37, 80, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme3_button_click, False)
         self.theme4Button = Button(Assets.THEME4.value, Position(self, 67, 80, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme4_button_click, False)
 
-    def drawBackground(self):
+
+    def _drawBackground(self):
         background = self.themeManager.getBackground()
         self.display.blit(pg.transform.scale(background, self.size), (0, 0))
 
 
-    def drawSettingsMenu(self):
-        self.drawBackground()
+    def _drawMainMenu(self):
+        self._drawBackground()
+
+        font = pg.font.SysFont(self.themeManager.fontName, 90)
+        title = font.render("Gomoku", True, (255, 255, 255))
+        self.display.blit(title, (self.size[0] // 2 - title.get_width() // 2, 100))
+        font = pg.font.SysFont(self.themeManager.fontName, 50)
+        selectModeText = font.render("Select Game Mode:", True, (255, 255, 255))
+        self.display.blit(selectModeText, (self.size[0] // 2 - selectModeText.get_width() // 2, 300))
+
+        self.pvpButton.draw(self.display)
+        self.pveButton.draw(self.display)
+
+        self.exitButton.draw(self.display)
+        self.settingButton.draw(self.display)
+
+        pg.display.flip()
+
+
+    def _drawGameScene(self):
+        self._drawBackground()
+        self.board.draw(self)
+
+        self.exitButton.draw(self.display)
+        self.homeButton.draw(self.display)
+
+        self.player1Icon.draw(self.display)
+        self.player2Icon.draw(self.display)
+
+        # print scores
+        font = pg.font.SysFont(self.themeManager.fontName, 90)
+        score = font.render(f"{self.game.currentScore[1]} | {self.game.currentScore[2]}", True, (255, 255, 255))
+        self.display.blit(score, (self.size[0] // 2 - score.get_width() // 2, 30))
+
+        pg.display.flip()
+
+
+    def _drawSettingsMenu(self):
+        self._drawBackground()
 
         font = pg.font.SysFont(self.themeManager.fontName, 100)
         title = font.render("Settings", True, (255, 255, 255))
@@ -89,72 +129,37 @@ class Window:
         pg.display.flip()
 
 
-    def drawBoard(self):
-        color = self.themeManager.getBoardColor()
-        circleRadius = 7
-        lineWidth = 2
-
-        # draw 19x19 grid
-        for i in range(self.game.numCase):
-            # vertical lines
-            startPos = (self.game.boardBorderOrigin(self)[0] + i * self.game.caseSize - 1, self.game.boardBorderOrigin(self)[1] - 1)
-            endPos = (self.game.boardBorderOrigin(self)[0] + i * self.game.caseSize - 1, self.game.boardBorderOrigin(self)[1] + self.game.boardBorderSize - 1)
-            pg.draw.line(self.display, color, startPos, endPos, lineWidth)
-            # horizontal lines
-            startPos = (self.game.boardBorderOrigin(self)[0] - 1, self.game.boardBorderOrigin(self)[1] + i * self.game.caseSize - 1)
-            endPos = (self.game.boardBorderOrigin(self)[0] + self.game.boardBorderSize - 1, self.game.boardBorderOrigin(self)[1] + i * self.game.caseSize - 1)
-            pg.draw.line(self.display, color, startPos, endPos, lineWidth)
-        
-        # draw star points
-        starPoints = [(3, 3), (3, 9), (3, 15), (9, 3), (9, 9), (9, 15), (15, 3), (15, 9), (15, 15)]
-    
-        for point in starPoints:
-            center = (self.game.boardBorderOrigin(self)[0] + point[0] * self.game.caseSize, self.game.boardBorderOrigin(self)[1] + point[1] * self.game.caseSize)
-            pg.draw.circle(self.display, color, center, circleRadius)
-        
-        # draw pieces
-        for row in range(self.game.numCase):
-            for col in range(self.game.numCase):
-                if self.game.boardState[row][col] != 0:
-                    # TODO: replace with custom piece images from theme manager
-                    pos = self.game.getPosFromIndex(row, col, self)
-                    color = (0, 0, 0) if self.game.boardState[row][col] == 1 else (255, 255, 255)
-                    pg.draw.circle(self.display, color, pos, self.game.caseSize // 2 - 2)
+# Public methods
+    def refreshDisplay(self):
+        match self.displayedWindow:
+            case DisplayedWindow.MAIN_MENU:
+                self._drawMainMenu()
+            case DisplayedWindow.GAME_SCENE:
+                self._drawGameScene()
+            case DisplayedWindow.SETTINGS:
+                self._drawSettingsMenu()
 
 
-    def drawGameScene(self):
-        self.drawBackground()
-        self.drawBoard()
-
-        self.exitButton.draw(self.display)
-        self.homeButton.draw(self.display)
-
-        self.player1Icon.draw(self.display)
-        self.player2Icon.draw(self.display)
-
-        # print scores
-        font = pg.font.SysFont(self.themeManager.fontName, 90)
-        score = font.render(f"{self.game.currentScore[1]} | {self.game.currentScore[2]}", True, (255, 255, 255))
-        self.display.blit(score, (self.size[0] // 2 - score.get_width() // 2, 30))
-
-        pg.display.flip()
+    # Update methods for each window, called from event handler
+    def updateMainMenu(self, event: pg.event.Event):
+        self.pvpButton.update(event)
+        self.pveButton.update(event)
+        self.settingButton.update(event)
+        self.exitButton.update(event)
 
 
-    def drawMainMenu(self):
-        self.drawBackground()
+    def updateGameScene(self, event: pg.event.Event):
+        self.homeButton.update(event)
+        self.exitButton.update(event)
+        self.game.update(event, self)
 
-        font = pg.font.SysFont(self.themeManager.fontName, 90)
-        title = font.render("Gomoku", True, (255, 255, 255))
-        self.display.blit(title, (self.size[0] // 2 - title.get_width() // 2, 100))
-        font = pg.font.SysFont(self.themeManager.fontName, 50)
-        selectModeText = font.render("Select Game Mode:", True, (255, 255, 255))
-        self.display.blit(selectModeText, (self.size[0] // 2 - selectModeText.get_width() // 2, 300))
 
-        self.pvpButton.draw(self.display)
-        self.pveButton.draw(self.display)
-
-        self.exitButton.draw(self.display)
-        #self.playButton.draw(self.display)
-        self.settingButton.draw(self.display)
-
-        pg.display.flip()
+    def updateSettingsMenu(self, event: pg.event.Event):
+        self.musicButton.update(event)
+        self.soundButton.update(event)
+        self.theme1Button.update(event)
+        self.theme2Button.update(event)
+        self.theme3Button.update(event)
+        self.theme4Button.update(event)
+        self.settingButton.update(event)
+        self.exitButton.update(event)
