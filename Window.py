@@ -19,13 +19,14 @@ from assets import Assets
 from Board import Board
 from Game import Game
 
+
 class Window:
     def __init__(self, game):
         self.game = game
         self.size = (1600, 900)
         self.fps = 30
         self.displayedWindow = DisplayedWindow.MAIN_MENU
-        self.display = self._createDisplay("Gomoku", Assets.ICON.value)
+        self.display = self._createDisplay("Gomoku", Assets.ICON)
 
         self.soundEffects = SoundEffects()
         self.musicPlayer = MusicPlayer()
@@ -50,20 +51,20 @@ class Window:
     def _setButtons(self):
         buttonClick = ButtonClickHandler(self.game, self)
 
-        self.exitButton = Button(Assets.EXIT.value, Position(self, 96, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.exit_button_click)
-        self.settingButton = Button(Assets.SETTINGS.value, Position(self, 92, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.setting_button_click)
-        self.homeButton = Button(Assets.HOME.value, Position(self, 92, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.home_button_click)
+        self.exitButton = Button(Assets.EXIT, Position(self, 96, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.exit_button_click)
+        self.settingButton = Button(Assets.SETTINGS, Position(self, 92, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.setting_button_click)
+        self.homeButton = Button(Assets.HOME, Position(self, 92, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.home_button_click)
 
-        self.musicButton = ToggleButton(Assets.MUSIC_ON.value, Assets.MUSIC_OFF.value, Position(self, 50, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), True, buttonClick.music_button_click)
-        self.soundButton = ToggleButton(Assets.SOUND_ON.value, Assets.SOUND_OFF.value, Position(self, 50, 60, PositionUnit.PERCENTAGE, PositionReference.CENTER), True, buttonClick.sound_button_click)
+        self.musicButton = ToggleButton(Assets.MUSIC_ON, Assets.MUSIC_OFF, Position(self, 50, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), True, buttonClick.music_button_click)
+        self.soundButton = ToggleButton(Assets.SOUND_ON, Assets.SOUND_OFF, Position(self, 50, 60, PositionUnit.PERCENTAGE, PositionReference.CENTER), True, buttonClick.sound_button_click)
         
-        self.pvpButton = Button(Assets.PVP.value, Position(self, 33, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.pvp_button_click)
-        self.pveButton = Button(Assets.PVE.value, Position(self, 66, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.pve_button_click)
+        self.pvpButton = Button(Assets.PVP, Position(self, 33, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.pvp_button_click)
+        self.pveButton = Button(Assets.PVE, Position(self, 66, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.pve_button_click)
 
-        self.theme1Button = Button(Assets.THEME1.value, Position(self, 37, 67, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme1_button_click, False)
-        self.theme2Button = Button(Assets.THEME2.value, Position(self, 67, 67, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme2_button_click, False)
-        self.theme3Button = Button(Assets.THEME3.value, Position(self, 37, 80, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme3_button_click, False)
-        self.theme4Button = Button(Assets.THEME4.value, Position(self, 67, 80, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme4_button_click, False)
+        self.theme1Button = Button(Assets.THEME1, Position(self, 37, 67, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme1_button_click, False)
+        self.theme2Button = Button(Assets.THEME2, Position(self, 67, 67, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme2_button_click, False)
+        self.theme3Button = Button(Assets.THEME3, Position(self, 37, 80, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme3_button_click, False)
+        self.theme4Button = Button(Assets.THEME4, Position(self, 67, 80, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme4_button_click, False)
 
 
     def _drawBackground(self):

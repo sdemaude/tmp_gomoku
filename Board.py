@@ -1,16 +1,15 @@
 import pygame as pg
 from pygame.locals import *
-from enum import Enum
 
 from ThemeManager import ThemeManager
 
 
-class BoardParameters(Enum):
-    BOARD_SIZE = 722
-    BOARD_Y_OFFSET = 150
+class BoardParam:
+    SIZE = 722
+    Y_OFFSET = 150
     NUM_CASE = 19
-    CASE_SIZE = BOARD_SIZE // NUM_CASE
-    BOARD_BORDER_SIZE = BOARD_SIZE - CASE_SIZE
+    CASE_SIZE = SIZE // NUM_CASE
+    BORDER_SIZE = SIZE - CASE_SIZE
 
 
 class Board:
@@ -24,15 +23,15 @@ class Board:
 
     def _boardOrigin(self, window):
         return (
-            window.size[0] // 2 - BoardParameters.BOARD_SIZE.value // 2,
-            BoardParameters.BOARD_Y_OFFSET.value
+            window.size[0] // 2 - BoardParam.SIZE // 2,
+            BoardParam.Y_OFFSET
             )
 
 
     def _boardBorderOrigin(self, window):
         return (
-            self._boardOrigin(window)[0] + (BoardParameters.CASE_SIZE.value // 2),
-            self._boardOrigin(window)[1] + (BoardParameters.CASE_SIZE.value // 2)
+            self._boardOrigin(window)[0] + (BoardParam.CASE_SIZE // 2),
+            self._boardOrigin(window)[1] + (BoardParam.CASE_SIZE // 2)
             )
 
 
@@ -40,41 +39,41 @@ class Board:
         boardOrigin = self._boardOrigin(window)
         x_rel = pos[0] - boardOrigin[0]
         y_rel = pos[1] - boardOrigin[1]
-        if 0 <= x_rel < BoardParameters.BOARD_SIZE.value and 0 <= y_rel < BoardParameters.BOARD_SIZE.value:
-            col = int(x_rel // BoardParameters.CASE_SIZE.value)
-            row = int(y_rel // BoardParameters.CASE_SIZE.value)
+        if 0 <= x_rel < BoardParam.SIZE and 0 <= y_rel < BoardParam.SIZE:
+            col = int(x_rel // BoardParam.CASE_SIZE)
+            row = int(y_rel // BoardParam.CASE_SIZE)
             return (row, col)
         return (None, None)
 
 
     def _getPosFromIndex(self, row: int, col: int, window):
         boardBorderOrigin = self._boardBorderOrigin(window)
-        x = boardBorderOrigin[0] + col * BoardParameters.CASE_SIZE.value
-        y = boardBorderOrigin[1] + row * BoardParameters.CASE_SIZE.value
+        x = boardBorderOrigin[0] + col * BoardParam.CASE_SIZE
+        y = boardBorderOrigin[1] + row * BoardParam.CASE_SIZE
         return (x, y)
 
 
     def _drawGrid(self, window, color, lineWidth):
-        for i in range(BoardParameters.NUM_CASE.value):
+        for i in range(BoardParam.NUM_CASE):
             # vertical lines
             startPos = (
-                self._boardBorderOrigin(window)[0] + i * BoardParameters.CASE_SIZE.value - 1,
+                self._boardBorderOrigin(window)[0] + i * BoardParam.CASE_SIZE - 1,
                 self._boardBorderOrigin(window)[1] - 1
                 )
             endPos = (
-                self._boardBorderOrigin(window)[0] + i * BoardParameters.CASE_SIZE.value - 1,
-                self._boardBorderOrigin(window)[1] + BoardParameters.BOARD_BORDER_SIZE.value - 1
+                self._boardBorderOrigin(window)[0] + i * BoardParam.CASE_SIZE - 1,
+                self._boardBorderOrigin(window)[1] + BoardParam.BORDER_SIZE - 1
                 )
             pg.draw.line(window.display, color, startPos, endPos, lineWidth)
 
             # horizontal lines
             startPos = (
                 self._boardBorderOrigin(window)[0] - 1,
-                self._boardBorderOrigin(window)[1] + i * BoardParameters.CASE_SIZE.value - 1
+                self._boardBorderOrigin(window)[1] + i * BoardParam.CASE_SIZE - 1
                 )
             endPos = (
-                self._boardBorderOrigin(window)[0] + BoardParameters.BOARD_BORDER_SIZE.value - 1,
-                self._boardBorderOrigin(window)[1] + i * BoardParameters.CASE_SIZE.value - 1
+                self._boardBorderOrigin(window)[0] + BoardParam.BORDER_SIZE - 1,
+                self._boardBorderOrigin(window)[1] + i * BoardParam.CASE_SIZE - 1
                 )
             pg.draw.line(window.display, color, startPos, endPos, lineWidth)
 
@@ -84,8 +83,8 @@ class Board:
     
         for point in starPoints:
             center = (
-                self._boardBorderOrigin(window)[0] + point[0] * BoardParameters.CASE_SIZE.value,
-                self._boardBorderOrigin(window)[1] + point[1] * BoardParameters.CASE_SIZE.value
+                self._boardBorderOrigin(window)[0] + point[0] * BoardParam.CASE_SIZE,
+                self._boardBorderOrigin(window)[1] + point[1] * BoardParam.CASE_SIZE
                 )
             pg.draw.circle(window.display, color, center, circleRadius)
 
@@ -93,13 +92,13 @@ class Board:
     def _drawPieces(self, window):
         self.boardState = window.game.boardState
 
-        for row in range(BoardParameters.NUM_CASE.value):
-            for col in range(BoardParameters.NUM_CASE.value):
+        for row in range(BoardParam.NUM_CASE):
+            for col in range(BoardParam.NUM_CASE):
                 if self.boardState[row][col] != 0:
                     # TODO: replace with custom piece images from theme manager
                     pos = self._getPosFromIndex(row, col, window)
                     color = (0, 0, 0) if self.boardState[row][col] == 1 else (255, 255, 255)
-                    pg.draw.circle(window.display, color, pos, BoardParameters.CASE_SIZE.value // 2 - 2)
+                    pg.draw.circle(window.display, color, pos, BoardParam.CASE_SIZE // 2 - 2)
 
 
     def draw(self, window):

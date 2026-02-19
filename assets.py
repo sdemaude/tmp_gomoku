@@ -1,6 +1,6 @@
 from enum import Enum
 
-class Assets(Enum):
+class Assets:
     ICON = "assets/image/icon_star_normal.png"
 
     EXIT = "assets/image/icon_exit.png"

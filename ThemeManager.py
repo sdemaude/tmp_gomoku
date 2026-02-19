@@ -4,6 +4,7 @@ from pygame.locals import *
 from MusicPlayer import MusicPlayer
 from Game import GameMode
 
+
 class ThemeManager:
     def __init__(self, themes, window, default: str="classic"):
         self.themes = themes
