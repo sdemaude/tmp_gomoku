@@ -6,14 +6,13 @@ from Position import Position
 
 def createHoverImage(image: pg.Surface, factor: float):
     imageHoverSize = (int(image.get_width() * factor), int(image.get_height() * factor))
-    imageHover = pg.transform.scale(image, imageHoverSize)
+    imageHover = pg.transform.smoothscale(image, imageHoverSize)
     return imageHover
 
 
 class Button:
     def __init__(self, image_path: str, position: Position, callBack: callable, unloadOnClick: bool=True):
         self.image = pg.image.load(image_path).convert_alpha()
-        #self.image = pg.transform.scale(self.image, size)
         self.size = self.image.get_size()
         self.position = position
         pos = position.get(self.size)
@@ -21,13 +20,12 @@ class Button:
         self.callback = callBack
         self.onHover = False
         self.unloadOnClick = unloadOnClick
-        self.imageHover = createHoverImage(self.image, 1.2)
+        self.imageHover = createHoverImage(self.image, 1.1)
 
 
     def draw(self, surface: pg.Surface):
         if self.onHover:
-            # TODO: change for the Position class to support hover position
-            surface.blit(self.imageHover, (self.rect.centerx - self.imageHover.get_width() // 2, self.rect.centery - self.imageHover.get_height() // 2))
+            surface.blit(self.imageHover, self.position.get(self.imageHover.get_size()))
         else:
             surface.blit(self.image, self.position.get(self.image.get_size()))
 

@@ -15,14 +15,16 @@ class PositionUnit(Enum):
 
 # used to place buttons and other elements on the screen
 class Position:
-    def __init__(self, window, x: float, y: float, unit: PositionUnit=PositionUnit.PIXELS, reference: PositionReference=PositionReference.TOP_LEFT):
+    def __init__(self, window, pos: tuple, unit: PositionUnit=PositionUnit.PERCENTAGE, reference: PositionReference=PositionReference.CENTER):
         self.window = window
+        x, y = pos 
         self._x = floor(x if unit == PositionUnit.PIXELS else x * window.size[0] / 100)
         self._y = floor(y if unit == PositionUnit.PIXELS else y * window.size[1] / 100)
         self.unit = unit
         self.reference = reference
 
-    def get(self, elementSize: tuple=(0, 0), reference: PositionReference=PositionReference.TOP_LEFT):
+
+    def get(self, elementSize: tuple=(0, 0), reference: PositionReference=PositionReference.TOP_LEFT) -> tuple:
         match reference:
             case PositionReference.TOP_LEFT:
                 match self.reference:
@@ -56,3 +58,23 @@ class Position:
                         raise ValueError("Invalid position type")
             case _:
                 raise ValueError("Invalid position type")
+
+    
+    def convert(pos: tuple, elementSize: tuple, fromReference: PositionReference, toReference: PositionReference = PositionReference.TOP_LEFT) -> tuple:
+        x, y = pos
+        
+        if fromReference == PositionReference.CENTER:
+            x -= elementSize[0] // 2
+            y -= elementSize[1] // 2
+        elif fromReference == PositionReference.BOTTOM_RIGHT:
+            x -= elementSize[0]
+            y -= elementSize[1]
+
+        if toReference == PositionReference.CENTER:
+            x += elementSize[0] // 2
+            y += elementSize[1] // 2
+        elif toReference == PositionReference.BOTTOM_RIGHT:
+            x += elementSize[0]
+            y += elementSize[1]
+
+        return (x, y)

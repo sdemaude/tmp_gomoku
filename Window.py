@@ -51,20 +51,20 @@ class Window:
     def _setButtons(self):
         buttonClick = ButtonClickHandler(self.game, self)
 
-        self.exitButton = Button(Assets.EXIT, Position(self, 96, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.exit_button_click)
-        self.settingButton = Button(Assets.SETTINGS, Position(self, 92, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.setting_button_click)
-        self.homeButton = Button(Assets.HOME, Position(self, 92, 5, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.home_button_click)
+        self.exitButton = Button(Assets.EXIT, Position(self, (96, 5)), buttonClick.exitButtonClick)
+        self.settingButton = Button(Assets.SETTINGS, Position(self, (92, 5)), buttonClick.settingButtonClick)
+        self.homeButton = Button(Assets.HOME, Position(self, (92, 5)), buttonClick.homeButtonClick)
 
-        self.musicButton = ToggleButton(Assets.MUSIC_ON, Assets.MUSIC_OFF, Position(self, 50, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), True, buttonClick.music_button_click)
-        self.soundButton = ToggleButton(Assets.SOUND_ON, Assets.SOUND_OFF, Position(self, 50, 60, PositionUnit.PERCENTAGE, PositionReference.CENTER), True, buttonClick.sound_button_click)
+        self.musicButton = ToggleButton(Assets.MUSIC_ON, Assets.MUSIC_OFF, Position(self, (50, 50)), True, buttonClick.musicButtonClick)
+        self.soundButton = ToggleButton(Assets.SOUND_ON, Assets.SOUND_OFF, Position(self, (50, 60)), True, buttonClick.soundButtonClick)
         
-        self.pvpButton = Button(Assets.PVP, Position(self, 33, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.pvp_button_click)
-        self.pveButton = Button(Assets.PVE, Position(self, 66, 50, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.pve_button_click)
+        self.pvpButton = Button(Assets.PVP, Position(self, (33, 50)), buttonClick.pvpButtonClick)
+        self.pveButton = Button(Assets.PVE, Position(self, (66, 50)), buttonClick.pveButtonClick)
 
-        self.theme1Button = Button(Assets.THEME1, Position(self, 37, 67, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme1_button_click, False)
-        self.theme2Button = Button(Assets.THEME2, Position(self, 67, 67, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme2_button_click, False)
-        self.theme3Button = Button(Assets.THEME3, Position(self, 37, 80, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme3_button_click, False)
-        self.theme4Button = Button(Assets.THEME4, Position(self, 67, 80, PositionUnit.PERCENTAGE, PositionReference.CENTER), buttonClick.theme4_button_click, False)
+        self.theme1Button = Button(Assets.THEME1, Position(self, (37, 67)), buttonClick.theme1ButtonClick, False)
+        self.theme2Button = Button(Assets.THEME2, Position(self, (67, 67)), buttonClick.theme2ButtonClick, False)
+        self.theme3Button = Button(Assets.THEME3, Position(self, (37, 80)), buttonClick.theme3ButtonClick, False)
+        self.theme4Button = Button(Assets.THEME4, Position(self, (67, 80)), buttonClick.theme4ButtonClick, False)
 
 
     def _drawBackground(self):

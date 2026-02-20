@@ -15,7 +15,7 @@ class PlayerIcon:
 
     def image(self):
         image = self.themeManager.getPlayerIcon(self.playerId, self.game.mode)
-        return pg.transform.scale(image, self.size)
+        return pg.transform.smoothscale(image, self.size)
 
 
     def draw(self, surface: pg.Surface):
@@ -27,4 +27,4 @@ class PlayerIcon:
 
 
     def animate(self, surface: pg.Surface):
-        self.position = (self.originalPosition[0], self.originalPosition[1] + 20 * math.sin(pg.time.get_ticks() / 200))
+        self.position = (self.originalPosition[0], self.originalPosition[1] + 15 * math.sin(pg.time.get_ticks() / 200))

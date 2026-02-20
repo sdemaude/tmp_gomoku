@@ -23,6 +23,15 @@ class ThemeManager:
             raise ValueError("Invalid game mode")
 
 
+    def getPiecesImage(self, playerId: int):
+        if playerId == 1:
+            return self._images["stone_player1"]
+        elif playerId == 2:
+            return self._images["stone_player2"]
+        else:
+            raise ValueError("Invalid player ID")
+
+
     def getBackground(self):
         return self._images.get("background")
 

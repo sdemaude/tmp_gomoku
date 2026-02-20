@@ -2,6 +2,7 @@ import pygame as pg
 from pygame.locals import *
 
 from ThemeManager import ThemeManager
+from Position import Position, PositionUnit, PositionReference
 
 
 class BoardParam:
@@ -95,10 +96,14 @@ class Board:
         for row in range(BoardParam.NUM_CASE):
             for col in range(BoardParam.NUM_CASE):
                 if self.boardState[row][col] != 0:
-                    # TODO: replace with custom piece images from theme manager
                     pos = self._getPosFromIndex(row, col, window)
-                    color = (0, 0, 0) if self.boardState[row][col] == 1 else (255, 255, 255)
-                    pg.draw.circle(window.display, color, pos, BoardParam.CASE_SIZE // 2 - 2)
+
+                    player1Piece = window.themeManager.getPiecesImage(1)
+                    player2Piece = window.themeManager.getPiecesImage(2)
+                    pieceImage = player1Piece if self.boardState[row][col] == 1 else player2Piece
+
+                    piecePos = Position.convert(pos, pieceImage.get_size(), PositionReference.CENTER)
+                    window.display.blit(pieceImage, piecePos)
 
 
     def draw(self, window):
